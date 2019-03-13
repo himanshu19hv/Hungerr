@@ -92,7 +92,24 @@ $register_error=False;
           }
       }
     }
+
   </script>
+  <style>
+  .imgcontainer {
+  text-align: center;
+  margin: 24px 0 12px 0;
+}
+
+img.avatar {
+  width: 40%;
+  border-radius: 50%;
+}
+
+.container {
+  padding: 16px;
+}
+
+  </style>
   </head>
   <body data-spy="scroll" data-target="#site-navbar" data-offset="200">
     
@@ -200,7 +217,7 @@ $register_error=False;
                   <img src="images/offer_3.jpg" alt="Hungerr_resources" class="img-fluid">
                   <div class="media-body p-md-5 p-4">
                     <h5 class="text-primary">Rs.11.50</h5>
-                    <h5 class="mt-0 h4">Special Chawmeen</h5>
+                    <h5 class="mt-0 h4">Special Chowmein</h5>
                     <p class="mb-4">What to expect in just @11.50.?? Now, get Special Chawmeen from our best restaurant at such a low cost.</p>
 
                     <p class="mb-0"><a href="#" class="btn btn-primary btn-sm">Order Now!</a></p>
@@ -782,18 +799,17 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                 </button>
                 <h1 class="mb-4">Login</h1>  
                 <form method="post" action=<?php echo htmlspecialchars($_SERVER['PHP_SELF'])?>>
-                  <div class="row">
-                    <div class="col-md-12 form-group">
-                      <label for="m_email"><b>E_mail/Mobile:-</b></label>
-                      <input name="username" type="text" class="form-control" id="m_email">
-                    </div>
+                  <div class="imgcontainer">
+                  <img src="favicon.png" class="avatar">
                   </div>
-                  <div class="row">
-                    <div class="col-md-12 form-group">
-                      <label for="m_name"><b>Password</b></label>
-                      <input name="pswd" type="password" class="form-control" id="m_name">
-                    </div>
-                  </div>
+
+                  <div class="container">
+                  <label for="uname"><b>E-mail/mobile no.</b></label>
+                  <input name="username" type="text" class="form-control" id="m_email">
+
+                  <label for="psw"><b>Password</b></label>
+                  <input name="pswd" type="password" class="form-control" id="m_name">
+  
                   <div class="row">
                     <div class="col-md-12 form-group">
                       <input type="submit" class="btn btn-primary btn-lg btn-block" value="LOGIN">
