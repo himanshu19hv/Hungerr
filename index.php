@@ -2,12 +2,16 @@
 session_start();
 ob_start();
 $register_error=False;
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Hungerr.in</title>
     <meta chaRs.et="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <meta name="google-signin-client_id" content="975596800062-g7bjc9g8gpcpj3tbqfdblla62sl2qr4h.apps.googleusercontent.com" >
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <link rel="icon" type="image/png" href="images/favicon.jpg"/>
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700|Raleway" rel="stylesheet">
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -20,11 +24,10 @@ $register_error=False;
 
     <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="css/jquery.timepicker.css">
-
     
-
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
+    
     <style>
   .rv1, .rv1:focus, .rv1:hover, .rv1:active{    width: -webkit-fill-available;
     height: -webkit-fill-available;
@@ -70,6 +73,43 @@ $register_error=False;
   </style>
   <body class="animsition">
   <script type="text/javascript">
+  window.onload = function () {
+           document.addEventListener("contextmenu", function (e) {
+               e.preventDefault();
+           }, false);
+           document.addEventListener("keydown", function (e) {
+               //document.onkeydown = function(e) {
+               // "I" key
+               if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                   disabledEvent(e);
+               }
+               // "J" key
+               if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+                   disabledEvent(e);
+               }
+               // "S" key + macOS
+               if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                   disabledEvent(e);
+               }
+               // "U" key
+               if (e.ctrlKey && e.keyCode == 85) {
+                   disabledEvent(e);
+               }
+               // "F12" key
+              if (event.keyCode == 123) {
+                  disabledEvent(e);
+              }
+           }, false);
+           function disabledEvent(e) {
+               if (e.stopPropagation) {
+                   e.stopPropagation();
+               } else if (window.event) {
+                   window.event.cancelBubble = true;
+               }
+               e.preventDefault();
+               return false;
+           }
+       }
   function passwordError(){
     alert("Error:- Password does not match.");
   }
@@ -95,7 +135,6 @@ $register_error=False;
   </script>
   </head>
   <body data-spy="scroll" data-target="#site-navbar" data-offset="200">
-    
     <nav class="navbar navbar-expand-lg navbar-dark site_navbar bg-dark site-navbar-light" id="site-navbar">
       <div class="container">
         <a class="navbar-brand" href="index.php"><img class="navbar-brand" src="images/favicon.PNG" alt="IMG-LOGO">Hungerr</a>
@@ -798,6 +837,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     <div class="col-md-12 form-group">
                       <input type="submit" class="btn btn-primary btn-lg btn-block" value="LOGIN">
                       <input href="https://hungerr.com/" target="_blank" data-toggle="modal" data-target="#registrationModal" data-dismiss="modal" type="button" class="btn btn-primary-reg btn-lg btn-block" value="REGISTER">
+                      <div class="g-signin2 btn btn-primary-reg btn-lg btn-block" data-onsuccess="onSignIn"></div>
                     </div>
                   <div class="col-md-6 form-group">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Member Login">
@@ -929,10 +969,44 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         </div>
       </div>
     </div>
-
+    
     <!-------------------------------------    END Modal   ---------------------------------------------->
     <!-- loader -->
     <div id="site-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
+   
+   <!--#######################################-->
+   <!--##  GOOGLE LOGIN  PROCESS            ##-->
+   <!--#######################################-->
+   
+    <script type="text/javascript">
+    function onSignIn(googleUser) {
+	  var profile = googleUser.getBasicProfile();
+      if(profile){
+          $.ajax({
+                type: 'POST',
+                url: 'login_pro.php',
+                data: {id:profile.getId(), name:profile.getName(), email:profile.getEmail()}
+            }).done(function(data){
+                console.log("google logged in");
+                if(!window.location.hash) {
+                    window.location = window.location + '#logged_in';
+                    window.location.reload();
+                }
+            }).fail(function() { 
+                alert( "Posting failed." );
+            });
+      }
+    }
+    function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+    auth2.disconnect().then(function () {
+      console.log('User disconnected out.');
+    });
+    }
+</script>
 
 
     <script src="js/jquery.min.js"></script>
@@ -1273,7 +1347,7 @@ if (isset($_POST["client_name"]) && isset($_POST["client_email"]) && isset($_POS
       }
   function authStatus(){
     if (isset($_SESSION['Name']))
-      {echo '<a class="nav-link" href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?logout=True">Logout</a>';}
+      {echo '<a class="nav-link" onclick="signOut()" href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?logout=True">Logout</a>';}
     else
       {echo '<a href="" target="_blank" data-toggle="modal" data-target="#loginModal" class="nav-link">Log in</a>';
       $notLoggedIN=True;}
@@ -1284,10 +1358,11 @@ if (isset($_POST["client_name"]) && isset($_POST["client_email"]) && isset($_POS
       header("Location:".htmlspecialchars($_SERVER['PHP_SELF']));
             }
       }
-  // #######################
-//     UTIL FUNCTIONS   #
-//                      #
-// #######################
+
+//########################
+//#     UTIL FUNCTIONS   #
+//#                      #
+//########################
 
   function check_input($data)
     {
