@@ -561,14 +561,14 @@ $register_error=False;
           </div>
 
           <div class="col-md-7 mb-5 site-animate">
-            <form action="" method="post">
+           <form action="" method="post">
               <div class="form-group">
                 <label for="name" class="sr-only">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Name">
+                <input name="name" type="text" class="form-control" id="name" placeholder="Name">
               </div>
               <div class="form-group">
                 <label for="email" class="sr-only">Email</label>
-                <input type="text" class="form-control" id="email" placeholder="Email">
+                <input name="email" type="text" class="form-control" id="email" placeholder="Email">
               </div>
               <div class="form-group">
                 <label for="message" class="sr-only">Message</label>
@@ -577,6 +577,28 @@ $register_error=False;
               <div class="form-group">
                 <input type="submit" class="btn btn-primary btn-lg" value="Send Message">
               </div>
+              <?php
+                if (isset($_POST['name'])&&isset($_POST['email'])&&isset($_POST['message']))     
+                {
+                  $to_email = 'support@hungerr.co.in';
+                  $subject = $_POST['name'].' sent a message from '.$_POST['email'];
+                  $message = $_POST['message'];
+                  $headers = 'From: '.$_POST['email']."\r\n";
+                  $headers .= "To: ".$to_email."\n";
+                  $headers .= "Organization: Sender Organization\r\n";
+                  $headers .= "MIME-Version: 1.0\r\n";
+                  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+                  $headers .= "X-Priority: 3\r\n";
+                  $headers .= "X-Mailer: PHP". phpversion() ."\r\n" ;
+                  $done=mail($to_email,$subject,$message,$headers);
+                  if($done==true){
+                    echo "SENT";
+                  }
+                  else{
+                    echo "Could not send e-mail.";
+                  }
+                }
+              ?>
             </form>
           </div>
           <div class="col-md-1"></div>
